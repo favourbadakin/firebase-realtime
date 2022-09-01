@@ -1,0 +1,52 @@
+import React, { useState, useEffect } from 'react';
+import { ref, onValue} from "firebase/database";
+import { db } from '../lib/init-firebase';
+
+export default function Parameters(){
+
+  // if( data !== null){
+            //     Object.values(data).map((sensors) => {
+            //         setSensors(oldArray =>[...oldArray, sensors]);
+            //     })
+         //   }
+            
+
+    const[books, setBooks] = useState([]);
+
+
+    useEffect(() => {
+        getBooks()
+    }, []);
+    
+    function getBooks(){
+        onValue(ref(db), snapshot => {
+            const data = snapshot.val();
+            console.log(data)
+            
+            const myBooks = data.map(doc => ({
+                dat: doc.dat(),
+                id: doc.id,
+            }))
+            setBooks(data)
+            //console.log(setBooks)
+        })
+    }
+ 
+    return(
+        <section>
+            <p>Temperature:</p>
+            <p>Humidity:</p>
+            <p>Light Intensity:</p>
+            <p>Oxygen level:</p>
+            <p>Smoke Detector:</p>
+
+                <ul>
+                {books.map(book => (
+                <li key={book.id}>{book.dat.temperature}</li>
+                ))}
+                {books.map(book => (
+                <li key={book.id}>{book.dat.humidity}</li>
+                ))}
+                </ul>
+        </section>
+    )}
